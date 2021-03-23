@@ -1,0 +1,385 @@
+GUIDE PULSE-EX UNTUK base cm13 MURNI {tested}, {untested}stock M,L cm12.1-12 silahkan coba/just try it 
+
+NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+NOTE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+JANGAN COBA DI BASE ROM M/13 RR,DU,AICP DLL YG MEMBAWA FITUR SMARTBAR,FLING,PULSE ATAU AGAN AKAN DISAYANG OLEH UI/BOOTLOP,SAYA SUDAH MENGINGATKAN
+DON,T TRY THIS ON BASE ROM 13 LIKE RR,DU,AICP ETC THAT BRING DEFAULT SMARTBAR,FLING ,PULSE OR YOU WILL END UP FC,I,VE WARN YOU
+
+
+pulse -ex tidak bekerja di app lagu streaming semisal joox,namun seperti smule atau music player lainnya  pulse-ex bisa bekerja dengan baik.
+
+
+
+TERIMAKASIH UNTUK
+
+RANDALL ROUSHING/BIGRUSHDOG
+DU TEAM
+felixpalmer
+CM
+maaad
+NOTEPAD
+lepi jadul yg selalu setia saat suka/duka
+saya sendiri yaitu awad abdurrahman/chelsea,z yg membuat pulse-ex
+
+
+decompile systemui agan
+
+buka res/values/colour dan tambahkan line dibawah sebelum resources
+<color name="config_pulseFillColor">#92ffffff</color>
+
+buka res/values/dimen.xml dan tambahkan line dibawah sebelum resources
+
+    <dimen name="config_pulsePathEffect_1">4.0dip</dimen>
+    <dimen name="config_pulsePathEffect1_1">5.0dip</dimen>
+    <dimen name="config_pulsePathEffect2_1">6.0dip</dimen>
+    <dimen name="config_pulsePathEffect3_1">7.0dip</dimen>
+    <dimen name="config_pulsePathEffect4_1">8.0dip</dimen>
+    <dimen name="config_pulsePathEffect_2">1.0dip</dimen>
+    <dimen name="config_pulsePathEffect1_2">2.0dip</dimen>
+    <dimen name="config_pulsePathEffect2_2">3.0dip</dimen>
+    <dimen name="config_pulsePathEffect3_2">4.0dip</dimen>
+    <dimen name="config_pulsePathEffect4_2">0.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth">14.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth1">7.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth2">8.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth3">9.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth4">10.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth5">11.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth6">12.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth7">13.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth8">15.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth9">16.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth10">17.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth11">18.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth12">19.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth13">20.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth14">21.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth15">22.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth16">23.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth17">24.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth18">25.0dip</dimen>
+    <dimen name="config_pulsePathStrokeWidth19">26.0dip</dimen>
+	
+	buka res/values/integer.xml dan tambahkan sebelum resources line dibawah
+	
+	<integer name="config_pulseDivisions">2</integer>
+    <integer name="config_pulseDivisions1">4</integer>
+    <integer name="config_pulseDivisions2">6</integer>
+    <integer name="config_pulseDivisions3">8</integer>
+    <integer name="config_pulseDivisions4">10</integer>
+    <integer name="config_pulseDivisions5">12</integer>
+    <integer name="config_pulseDivisions6">14</integer>
+    <integer name="config_pulseDivisions7">16</integer>
+    <integer name="config_pulseDivisions8">18</integer>
+    <integer name="config_pulseDbFuzzFactor">4</integer>
+    <integer name="config_pulseDbFuzzFactor1">2</integer>
+    <integer name="config_pulseDbFuzzFactor2">3</integer>
+    <integer name="config_pulseDbFuzzFactor3">5</integer>
+    <integer name="config_pulseDbFuzzFactor4">6</integer>
+    <integer name="config_pulseDbFuzz">2</integer>
+	
+sekarang buka com/android/systemui/statusbar/phone/notificationpanelview smali
+
+di bagian interfaces tambahkan line dibawah
+
+.implements Lcom/android/systemui/awad/pulse/PulseController$PulseObserver;
+	
+kalau bawaan agan tidak ada #interfaces bikin saja 
+
+dibawah fied .field private mPositionMinSideMargin:I tambahkan
+
+.field private mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+
+di .method protected onAttachedToWindow()V tambahkan 
+
+    .line 604
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    if-eqz v0, :cond_0
+
+    .line 605
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    const/4 v1, 0x1
+
+    invoke-virtual {v0, v1}, Lcom/android/systemui/awad/pulse/PulseController;->notifyScreenOn(Z)V
+
+    :cond_0
+	
+dan jangan lupa tuk menyesuaikan nilai local dan variablel v line diatas dengan bawaan
+
+
+di .method protected onConfigurationChanged(Landroid/content/res/Configuration;)V tambahkan 
+
+    .line 2370
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    if-eqz v0, :cond_1
+
+    .line 2371
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    invoke-virtual {p0}, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->getHeight()I
+
+    move-result v1
+
+    invoke-virtual {p0}, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->getWidth()I
+
+    move-result v2
+
+    invoke-virtual {p0}, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->getHeight()I
+
+    move-result v3
+
+    invoke-virtual {p0}, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->getWidth()I
+
+    move-result v4
+
+    invoke-virtual {v0, v1, v2, v3, v4}, Lcom/android/systemui/awad/pulse/PulseController;->onSizeChanged(IIII)V
+
+    :cond_1
+	
+	dan jangan lupa tuk menyesuaikan nilai local dan variablel v line diatas dengan bawaan
+	
+	
+di .method protected onDetachedFromWindow()V	tambahkan
+
+    .line 616
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    if-eqz v0, :cond_0
+
+    .line 617
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    invoke-virtual {v0}, Lcom/android/systemui/awad/pulse/PulseController;->doUnlinkVisualizer()V
+
+    :cond_0
+
+	dan jangan lupa tuk menyesuaikan nilai local dan variablel v line diatas dengan bawaan
+	
+	
+di bawah .method protected onDetachedFromWindow()V tambahkan method baru yg dibawah
+
+.method protected onDraw(Landroid/graphics/Canvas;)V
+    .locals 1
+    .annotation system Ldalvik/annotation/Signature;
+        value = {
+            "(",
+            "Landroid/graphics/Canvas;",
+            ")V"
+        }
+    .end annotation
+
+    .annotation runtime Ljava/lang/Override;
+    .end annotation
+
+    .prologue
+    .line 584
+    invoke-super {p0, p1}, Landroid/view/View;->onDraw(Landroid/graphics/Canvas;)V
+
+    .line 585
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    if-eqz v0, :cond_0
+
+    iget-boolean v0, p0 Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mKeyguardShowing:Z
+
+    if-nez v0, :cond_0
+
+    .line 586
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    invoke-virtual {v0, p1}, Lcom/android/systemui/awad/pulse/PulseController;->onDraw(Landroid/graphics/Canvas;)V
+
+    :cond_0
+    return-void
+.end method
+
+di .method protected onFinishInflate()V tambahkan sebelum return void
+
+    .line 547
+    new-instance v0, Lcom/android/systemui/awad/pulse/PulseController;
+
+    iget-object v1, p0, Landroid/view/View;->mContext:Landroid/content/Context;
+
+    iget-object v2, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mHandler:Landroid/os/Handler;
+
+    invoke-direct {v0, v1, v2}, Lcom/android/systemui/awad/pulse/PulseController;-><init>(Landroid/content/Context;Landroid/os/Handler;)V
+
+    iput-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    .line 548
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    invoke-virtual {v0, p0}, Lcom/android/systemui/awad/pulse/PulseController;->setPulseObserver(Lcom/android/systemui/awad/pulse/PulseController$PulseObserver;)V
+
+    .line 549
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    if-eqz v0, :cond_0
+
+    .line 550
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    invoke-virtual {v0, v7}, Lcom/android/systemui/awad/pulse/PulseController;->notifyScreenOn(Z)V
+
+    .line 551
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    invoke-virtual {v0, v6}, Lcom/android/systemui/awad/pulse/PulseController;->setLeftInLandscape(Z)V
+
+    :cond_0
+	
+	tolong diperhatikan,v6 dan v7 diatas agar sesuai dengan const bawaan setelah line prologue
+	
+	sebagai contoh di saya v6 dan v7 merujuk kesini 
+	.prologue
+    const/4 v7, 0x1
+
+    const/4 v6, 0x0
+	
+	agar terhindar dari verify error teliti tulisan ini,kalau bawaan agan tidak ada seperti contoh ini tambahkan saja ,lihat dibahan comper tuk jelasnya
+	
+	
+lanjut gan dikit lagi neh nanggung gan hehehehe
+
+dibawah .method public onScrollChanged()V tambahkan 3 method dibawah 
+
+.method protected onSizeChanged(IIII)V
+    .locals 1
+    .annotation system Ldalvik/annotation/Signature;
+        value = {
+            "(IIII)V"
+        }
+    .end annotation
+
+    .annotation runtime Ljava/lang/Override;
+    .end annotation
+
+    .prologue
+    .line 561
+    invoke-super {p0, p1, p2, p3, p4}, Landroid/view/View;->onSizeChanged(IIII)V
+
+    .line 562
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    if-eqz v0, :cond_0
+
+    .line 563
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    invoke-virtual {v0, p1, p2, p3, p4}, Lcom/android/systemui/awad/pulse/PulseController;->onSizeChanged(IIII)V
+
+    :cond_0
+    return-void
+.end method
+
+.method public onStartPulse(Landroid/view/animation/Animation;)Z
+    .locals 1
+    .annotation runtime Ljava/lang/Override;
+    .end annotation
+
+    .prologue
+    .line 570
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    if-eqz v0, :cond_0
+
+    .line 571
+    iget-object v0, p0, Lcom/android/systemui/statusbar/phone/NotificationPanelView;->mPulse:Lcom/android/systemui/awad/pulse/PulseController;
+
+    invoke-virtual {v0}, Lcom/android/systemui/awad/pulse/PulseController;->turnOnPulse()V
+
+    .line 573
+    :cond_0
+    const/4 v0, 0x0
+
+    return v0
+.end method
+
+.method public onStopPulse(Landroid/view/animation/Animation;)V
+    .locals 0
+    .annotation system Ldalvik/annotation/Signature;
+        value = {
+            "(",
+            "Landroid/view/animation/Animation;",
+            ")V"
+        }
+    .end annotation
+
+    .annotation runtime Ljava/lang/Override;
+    .end annotation
+
+    return-void
+.end method
+	
+sampai disini editan selesai gan tinggal recompile ui dan decompile buat mencocokan id 
+
+kalau sudah di rc dan dc kembali buka public agan ya dan siapin kopi agar tidak ngantuk mantengin list id hehehehehe
+
+list id udah saya siapkan dibawah ini gan silahkan di eksekusi
+
+	
+	
+	
+buka com/android/systemui/awad/pulse FadingBlockRenderer$LegacySettingsObserver ganti id nya dengan id agan ya gan ada 45 id
+	
+type="color" name="config_pulseFillColor" id="0x7f080091"
+type="dimen" name="config_pulsePathEffect_1" id="0x7f0a004c"
+type="dimen" name="config_pulsePathEffect_2" id="0x7f0a0051"
+type="dimen" name="config_pulsePathStrokeWidth" id="0x7f0a0056"
+type="integer" name="config_pulseDivisions" id="0x7f090005"
+type="integer" name="config_pulseDbFuzzFactor1" id="0x7f09000f"
+type="dimen" name="config_pulsePathEffect1_1" id="0x7f0a004d"
+type="dimen" name="config_pulsePathEffect2_1" id="0x7f0a004e"
+type="dimen" name="config_pulsePathEffect3_1" id="0x7f0a004f"
+type="dimen" name="config_pulsePathEffect4_1" id="0x7f0a0050"
+type="dimen" name="config_pulsePathEffect1_2" id="0x7f0a0052"
+type="dimen" name="config_pulsePathEffect2_2" id="0x7f0a0053"
+type="dimen" name="config_pulsePathEffect3_2" id="0x7f0a0054"
+type="dimen" name="config_pulsePathEffect4_2" id="0x7f0a0055"
+type="dimen" name="config_pulsePathStrokeWidth1" id="0x7f0a0057"
+type="dimen" name="config_pulsePathStrokeWidth2" id="0x7f0a0058"
+type="dimen" name="config_pulsePathStrokeWidth3" id="0x7f0a0059"
+type="dimen" name="config_pulsePathStrokeWidth4" id="0x7f0a005a"
+type="dimen" name="config_pulsePathStrokeWidth5" id="0x7f0a005b"
+type="dimen" name="config_pulsePathStrokeWidth6" id="0x7f0a005c"
+type="dimen" name="config_pulsePathStrokeWidth7" id="0x7f0a005d"
+type="dimen" name="config_pulsePathStrokeWidth8" id="0x7f0a005e"
+type="dimen" name="config_pulsePathStrokeWidth9" id="0x7f0a005f"
+type="dimen" name="config_pulsePathStrokeWidth10" id="0x7f0a0060"
+type="dimen" name="config_pulsePathStrokeWidth11" id="0x7f0a0061"
+type="dimen" name="config_pulsePathStrokeWidth12" id="0x7f0a0062"
+type="dimen" name="config_pulsePathStrokeWidth13" id="0x7f0a0063"
+type="dimen" name="config_pulsePathStrokeWidth14" id="0x7f0a0064"
+type="dimen" name="config_pulsePathStrokeWidth15" id="0x7f0a0065"
+type="dimen" name="config_pulsePathStrokeWidth16" id="0x7f0a0066"
+type="dimen" name="config_pulsePathStrokeWidth17" id="0x7f0a0067"
+type="dimen" name="config_pulsePathStrokeWidth18" id="0x7f0a0068"
+type="dimen" name="config_pulsePathStrokeWidth19" id="0x7f0a0069"
+type="integer" name="config_pulseDivisions1" id="0x7f090006"
+type="integer" name="config_pulseDivisions2" id="0x7f090007"
+type="integer" name="config_pulseDivisions3" id="0x7f090008"
+type="integer" name="config_pulseDivisions4" id="0x7f090009"
+type="integer" name="config_pulseDivisions5" id="0x7f09000a"
+type="integer" name="config_pulseDivisions6" id="0x7f09000b"
+type="integer" name="config_pulseDivisions7" id="0x7f09000c"
+type="integer" name="config_pulseDivisions8" id="0x7f09000d"
+type="integer" name="config_pulseDbFuzzFactor2" id="0x7f090010"
+type="integer" name="config_pulseDbFuzzFactor" id="0x7f09000e"
+type="integer" name="config_pulseDbFuzzFactor3" id="0x7f090011"
+type="integer" name="config_pulseDbFuzzFactor4" id="0x7f090012"
+
+buka com/android/systemui/awad/pulse/FadingBlockRenderer ada 1 id 
+type="integer" name="config_pulseDbFuzz" id="0x7f090013"
+
+masukkan folder awad ke smali/com/android/systemui/disini setelah selesai id nya di cocokkan 
+
+nah selesai deh  recompile kembali ui agan dan push/flash ketempatnya 
+
+tidak perlu rename-merename gan  ini dah sempurna hasil kerja keras saya sekian lama,tolong HARGAI kerja keras saya dengan tidak menduplikat/merename
+atau mengakui ini sebagai hasil karya agan.terimakasih
+ 
